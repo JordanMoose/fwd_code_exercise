@@ -1,19 +1,18 @@
 defmodule FwdCodeExercise.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
-  @moduledoc false
+  @moduledoc """
+  The main application module for application.
+  Starts the application and its supervision tree.
+  """
 
   use Application
 
   @impl true
+  @spec start(any(), any()) :: {:ok, pid()} | {:error, {:already_started, pid()} | {:shutdown, term()} | term()}
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: FwdCodeExercise.Worker.start_link(arg)
-      # {FwdCodeExercise.Worker, arg}
+      {Bandit, plug: FwdCodeExercise.Router, scheme: :http, port: 4000}
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: FwdCodeExercise.Supervisor]
     Supervisor.start_link(children, opts)
   end

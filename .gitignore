@@ -21,3 +21,6 @@ fwd_code_exercise-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Ignore the ElixirLS configuration directory.
+/.elixir_ls/

@@ -20,7 +20,9 @@ defmodule FwdCodeExercise.MixProject do
 
   defp deps do
     [
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:bandit, "~> 1.7"},
+      {:websock_adapter, "~> 0.5.8"},
     ]
   end
 end

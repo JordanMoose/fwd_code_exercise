@@ -22,7 +22,11 @@ defmodule FwdCodeExercise.MixProject do
     [
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:bandit, "~> 1.7"},
+      {:websock, "~> 0.5.3"},
       {:websock_adapter, "~> 0.5.8"},
+      {:phoenix_pubsub, "~> 2.1"},
+      {:req, "~> 0.5.15"},
+      {:jason, "~> 1.4"},
     ]
   end
 end

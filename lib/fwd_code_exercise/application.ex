@@ -16,8 +16,9 @@ defmodule FwdCodeExercise.Application do
   def start(_type, _args) do
     children = [
       {Phoenix.PubSub, name: FwdCodeExercise.PubSub},
-      {Bandit, plug: FwdCodeExercise.Router},
+      {Bandit, plug: FwdCodeExercise.Router, ip: :loopback, port: 4000},
       FwdCodeExercise.ArcGisPoller,
+      {FwdCodeExercise.SocketClient, Application.get_env(:fwd_code_exercise, :websocket_url, "ws://localhost:4000/")}
     ]
 
     opts = [strategy: :one_for_one, name: FwdCodeExercise.Supervisor]

@@ -24,6 +24,7 @@ defmodule FwdCodeExercise.MixProject do
       {:bandit, "~> 1.7"},
       {:websock, "~> 0.5.3"},
       {:websock_adapter, "~> 0.5.8"},
+      {:websockex, "~> 0.4.3"},
       {:phoenix_pubsub, "~> 2.1"},
       {:req, "~> 0.5.15"},
       {:jason, "~> 1.4"},

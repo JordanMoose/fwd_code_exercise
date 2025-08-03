@@ -6,11 +6,18 @@ defmodule FwdCodeExercise.Application do
 
   use Application
 
-  @spec start(Application.start_type(), start_args :: term())
-  :: {:ok, pid()} | {:error, {:already_started, pid()} | {:shutdown, term()} | term()}
+  @doc """
+  Starts the application and its supervision tree.
+  """
+  @impl Application
+  @spec start(Application.start_type(), term()) ::
+    {:ok, pid()} |
+    {:error, {:already_started, pid()} | {:shutdown, term()} | term()}
   def start(_type, _args) do
     children = [
-      {Bandit, plug: FwdCodeExercise.Router}
+      {Phoenix.PubSub, name: FwdCodeExercise.PubSub},
+      {Bandit, plug: FwdCodeExercise.Router},
+      FwdCodeExercise.ArcGisPoller,
     ]
 
     opts = [strategy: :one_for_one, name: FwdCodeExercise.Supervisor]

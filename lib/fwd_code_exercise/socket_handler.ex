@@ -34,15 +34,15 @@ defmodule FwdCodeExercise.SocketHandler do
   and pushes the stringified GeoJSON data to the client.
 
   ## Parameters
-  - `{:new_data, geojson}`: The GeoJSON data received from the ArcGisPoller.
+  - `{:wildfire_updates, geojson}`: The GeoJSON data received from the ArcGisPoller.
   - `state`: The current state of the WebSocket handler.
 
   ## Returns
   - `{:push, {:text, json}, state}`: The updated state of the WebSocket handler with the stringified GeoJSON data.
   """
   @impl WebSock
-  @spec handle_info({:new_data, map()}, WebSock.state()) :: {:push, {:text, binary()}, WebSock.state()}
-  def handle_info({:new_data, geojson}, state) do
+  @spec handle_info({:wildfire_updates, map()}, WebSock.state()) :: {:push, {:text, binary()}, WebSock.state()}
+  def handle_info({:wildfire_updates, geojson}, state) do
     json = Jason.encode!(geojson)
     {:push, {:text, json}, state}
   end

@@ -38,11 +38,11 @@ defmodule FwdCodeExercise.ArcGisPoller do
   """
   @impl GenServer
   @spec init(term()) ::
-    {:ok, term()} |
-    {:ok, term(), timeout() | :hibernate | {:continue, term()}} |
-    {:stop, term()} |
-    {:stop, term(), term()} |
-    :ignore
+          {:ok, term()}
+          | {:ok, term(), timeout() | :hibernate | {:continue, term()}}
+          | {:stop, term()}
+          | {:stop, term(), term()}
+          | :ignore
   def init(state) do
     send(self(), :wildfire_poll)
     {:ok, state}
@@ -85,7 +85,11 @@ defmodule FwdCodeExercise.ArcGisPoller do
   defp fetch_and_broadcast() do
     case fetch_wildfire_data() do
       {:ok, geojson} ->
-        PubSub.broadcast(FwdCodeExercise.PubSub, SocketHandler.topic_name(), {:new_data, geojson})
+        PubSub.broadcast(
+          FwdCodeExercise.PubSub,
+          SocketHandler.topic_name(),
+          {:wildfire_updates, geojson}
+        )
 
       {:error, error} ->
         Logger.error("API poll failed: #{inspect(error)}")

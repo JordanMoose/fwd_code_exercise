@@ -15,7 +15,7 @@ The goal of the application is to regularly provide users with up-to-date wildfi
 4. Run `asdf install` to install the required dependencies listed in the `.tool-versions` file.
 - **Note**: The Docker and Docker Compose dependencies will not be installed because asdf does not have their compatible plugins. They can safely be ignored because these dependencies are only required to build and deploy the application in a production environment.
 5. Run `mix deps.get` to install the required Elixir dependencies.
-6. Run `mix run --no-halt` to start the application. The application will write logs to the console and each wildfire update to `wildfire_updates/wildfire_data.<timestamp>.json`.
+6. Run `mix run --no-halt` to start the application. The application will write logs to the console and each wildfire update to `wildfire_updates/wildfire_data.<timestamp>.json`. Press Ctrl+C to stop the application at any time.
 
 ### For production deployment
 

@@ -37,12 +37,7 @@ defmodule FwdCodeExercise.ArcGisPoller do
   - `{:ok, state}`: The initial state of the GenServer.
   """
   @impl GenServer
-  @spec init(term()) ::
-          {:ok, term()}
-          | {:ok, term(), timeout() | :hibernate | {:continue, term()}}
-          | {:stop, term()}
-          | {:stop, term(), term()}
-          | :ignore
+  @spec init(term()) :: {:ok, term()}
   def init(state) do
     send(self(), :wildfire_poll)
     {:ok, state}

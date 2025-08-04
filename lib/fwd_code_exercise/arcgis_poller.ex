@@ -120,7 +120,7 @@ defmodule FwdCodeExercise.ArcGisPoller do
         {:ok, geojson}
 
       {:ok, %Response{body: body}} ->
-        {:error, "Failed to fetch wildfires data: #{inspect(body)}"}
+        {:error, "Unexpected response format for wildfires data: #{inspect(body)}"}
 
       {:error, error} ->
         {:error, "Failed to fetch wildfires data: #{inspect(error)}"}

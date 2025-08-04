@@ -12,7 +12,7 @@ defmodule FwdCodeExercise.ArcGisPoller do
 
   # TODO: Set poll interval to 15 minutes to match the ArcGIS API's update frequency
   @default_poll_interval :timer.seconds(60)
-  @incidents_endpoint "https://services9.arcgis.com/RHVPKKiFTONKtxq3/ArcGIS/rest/services/USA_Wildfires_v1/FeatureServer/0/query"
+  @default_incidents_endpoint "https://services9.arcgis.com/RHVPKKiFTONKtxq3/ArcGIS/rest/services/USA_Wildfires_v1/FeatureServer/0/query"
 
   @doc """
   Starts the ArcGisPoller GenServer.
@@ -104,6 +104,7 @@ defmodule FwdCodeExercise.ArcGisPoller do
   # - `{:error, error}`: If there is an error fetching the data.
   @spec fetch_wildfire_data() :: {:ok, map()} | {:error, binary()}
   defp fetch_wildfire_data() do
+    incidents_endpoint = Application.get_env(:fwd_code_exercise, :incidents_endpoint, @default_incidents_endpoint)
     params = [
       f: "geojson",
       where: "1=1",
@@ -111,7 +112,7 @@ defmodule FwdCodeExercise.ArcGisPoller do
       outSR: 4326,
     ]
 
-    case Req.get(@incidents_endpoint, params: params) do
+    case Req.get(incidents_endpoint, params: params) do
       {:ok, %Response{body: %{"error" => error}}} ->
         {:error, "Failed to fetch wildfires data: #{inspect(error)}"}
 

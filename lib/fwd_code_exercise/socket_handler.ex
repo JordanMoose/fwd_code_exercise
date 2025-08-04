@@ -1,4 +1,3 @@
-
 defmodule FwdCodeExercise.SocketHandler do
   @moduledoc """
   Handles WebSocket connections for the "wildfires" topic,
@@ -42,27 +41,29 @@ defmodule FwdCodeExercise.SocketHandler do
   """
   @impl WebSock
   @spec handle_info({:wildfire_updates, map()}, WebSock.state()) :: {:push, {:text, binary()}, WebSock.state()}
-  def handle_info({:wildfire_updates, geojson}, state) do
-    json = Jason.encode!(geojson)
-    {:push, {:text, json}, state}
+  def handle_info({:wildfire_updates, json}, state) do
+    wildfire_updates =
+      json
+      |> Map.put("type", "wildfire_updates")
+      |> Jason.encode!(pretty: true)
+    {:push, {:text, wildfire_updates}, state}
   end
 
   @doc """
-  Handles received frames from the client.
-  Logs the received frame and responds with a confirmation message.
+  Handles and logs frames received from the client.
 
   ## Parameters
   - `frame`: The frame received from the client.
   - `state`: The current state of the WebSocket handler.
 
   ## Returns
-  - `{:push, {:text, "Client frame received"}, state}`: The updated state of the WebSocket handler with the confirmation message.
+  - `{:ok, state}`: The updated state of the WebSocket handler.
   """
   @impl WebSock
-  @spec handle_in({binary(), [{:opcode, WebSock.data_opcode()}]}, WebSock.state()) :: {:push, {:text, binary()}, WebSock.state()}
-  def handle_in(frame, state) do
-    Logger.debug("Received frame from client: #{inspect(frame)}")
-    {:push, {:text, "Client frame received"}, state}
+  @spec handle_in({binary(), [opcode: WebSock.data_opcode()]}, WebSock.state()) :: {:ok, WebSock.state()}
+  def handle_in({msg, [opcode: _opcode]}, state) do
+    Logger.debug("Received message from client: #{inspect(msg)}")
+    {:ok, state}
   end
 
   @doc """

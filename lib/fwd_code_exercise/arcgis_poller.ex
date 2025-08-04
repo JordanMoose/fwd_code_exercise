@@ -11,7 +11,7 @@ defmodule FwdCodeExercise.ArcGisPoller do
   alias FwdCodeExercise.SocketHandler
 
   # TODO: Set poll interval to 15 minutes to match the ArcGIS API's update frequency
-  @poll_interval :timer.seconds(60)
+  @default_poll_interval :timer.seconds(60)
   @incidents_endpoint "https://services9.arcgis.com/RHVPKKiFTONKtxq3/ArcGIS/rest/services/USA_Wildfires_v1/FeatureServer/0/query"
 
   @doc """
@@ -69,7 +69,8 @@ defmodule FwdCodeExercise.ArcGisPoller do
   @spec handle_info(msg :: :wildfire_poll | term(), term()) :: {:noreply, term()}
   def handle_info(:wildfire_poll, state) do
     fetch_and_broadcast()
-    Process.send_after(self(), :wildfire_poll, @poll_interval)
+    poll_interval = Application.get_env(:fwd_code_exercise, :poll_interval, @default_poll_interval)
+    Process.send_after(self(), :wildfire_poll, poll_interval)
     {:noreply, state}
   end
 
@@ -105,7 +106,9 @@ defmodule FwdCodeExercise.ArcGisPoller do
   defp fetch_wildfire_data() do
     params = [
       f: "geojson",
-      where: "1=1"
+      where: "1=1",
+      returnGeometry: true,
+      outSR: 4326,
     ]
 
     case Req.get(@incidents_endpoint, params: params) do

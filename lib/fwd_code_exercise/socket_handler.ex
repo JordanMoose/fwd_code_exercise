@@ -24,8 +24,15 @@ defmodule FwdCodeExercise.SocketHandler do
   @impl WebSock
   @spec init(term()) :: {:ok, %{}}
   def init(_opts) do
-    PubSub.subscribe(FwdCodeExercise.PubSub, @topic_name)
-    {:ok, %{}}
+    case PubSub.subscribe(FwdCodeExercise.PubSub, @topic_name) do
+      :ok ->
+        Logger.info("Subscribed to topic: #{@topic_name}")
+        {:ok, %{}}
+
+      {:error, reason} ->
+        Logger.error("Failed to subscribe to topic: #{@topic_name}, reason: #{inspect(reason)}")
+        {:error, reason}
+    end
   end
 
   @doc """
@@ -40,12 +47,14 @@ defmodule FwdCodeExercise.SocketHandler do
   - `{:push, {:text, json}, state}`: The updated state of the WebSocket handler with the stringified GeoJSON data.
   """
   @impl WebSock
-  @spec handle_info({:wildfire_updates, map()}, WebSock.state()) :: {:push, {:text, binary()}, WebSock.state()}
+  @spec handle_info({:wildfire_updates, map()}, WebSock.state()) ::
+          {:push, {:text, binary()}, WebSock.state()}
   def handle_info({:wildfire_updates, json}, state) do
     wildfire_updates =
       json
       |> Map.put("type", "wildfire_updates")
       |> Jason.encode!(pretty: true)
+
     {:push, {:text, wildfire_updates}, state}
   end
 
@@ -60,7 +69,8 @@ defmodule FwdCodeExercise.SocketHandler do
   - `{:ok, state}`: The updated state of the WebSocket handler.
   """
   @impl WebSock
-  @spec handle_in({binary(), [opcode: WebSock.data_opcode()]}, WebSock.state()) :: {:ok, WebSock.state()}
+  @spec handle_in({binary(), [opcode: WebSock.data_opcode()]}, WebSock.state()) ::
+          {:ok, WebSock.state()}
   def handle_in({msg, [opcode: _opcode]}, state) do
     Logger.debug("Received message from client: #{inspect(msg)}")
     {:ok, state}

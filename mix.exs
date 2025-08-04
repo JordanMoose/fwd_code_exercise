@@ -29,6 +29,7 @@ defmodule FwdCodeExercise.MixProject do
       {:req, "~> 0.5.15"},
       {:jason, "~> 1.4"},
       {:mock, "~> 0.3.9", only: :test},
+      {:mox, "~> 1.2.0", only: :test},
     ]
   end
 end

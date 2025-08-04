@@ -7,8 +7,12 @@ defmodule FwdCodeExercise.ArcGisPoller do
   use GenServer
   require Logger
   alias Req.Response
-  alias Phoenix.PubSub
-  alias FwdCodeExercise.SocketHandler
+
+  alias FwdCodeExercise.{
+    PubSubClient,
+    HttpClient,
+    SocketHandler
+  }
 
   # TODO: Set poll interval to 15 minutes to match the ArcGIS API's update frequency
   @default_poll_interval :timer.seconds(60)
@@ -81,7 +85,7 @@ defmodule FwdCodeExercise.ArcGisPoller do
   defp fetch_and_broadcast() do
     case fetch_wildfire_data() do
       {:ok, geojson} ->
-        PubSub.broadcast(
+        PubSubClient.broadcast(
           FwdCodeExercise.PubSub,
           SocketHandler.topic_name(),
           {:wildfire_updates, geojson}
@@ -107,7 +111,7 @@ defmodule FwdCodeExercise.ArcGisPoller do
       outSR: 4326,
     ]
 
-    case Req.get(incidents_endpoint, params: params) do
+    case HttpClient.get(incidents_endpoint, params: params) do
       {:ok, %Response{body: %{"error" => error}}} ->
         {:error, "Failed to fetch wildfires data: #{inspect(error)}"}
 

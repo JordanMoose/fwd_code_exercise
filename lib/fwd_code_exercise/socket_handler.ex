@@ -6,7 +6,7 @@ defmodule FwdCodeExercise.SocketHandler do
 
   @behaviour WebSock
   require Logger
-  alias Phoenix.PubSub
+  alias FwdCodeExercise.PubSubClient
 
   @topic_name "wildfires"
   @spec topic_name :: <<_::72>>
@@ -24,7 +24,7 @@ defmodule FwdCodeExercise.SocketHandler do
   @impl WebSock
   @spec init(term()) :: {:ok, %{}}
   def init(_opts) do
-    case PubSub.subscribe(FwdCodeExercise.PubSub, @topic_name) do
+    case PubSubClient.subscribe(FwdCodeExercise.PubSub, @topic_name) do
       :ok ->
         Logger.info("Subscribed to topic: #{@topic_name}")
         {:ok, %{}}

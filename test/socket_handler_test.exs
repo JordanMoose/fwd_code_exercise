@@ -1,6 +1,6 @@
 defmodule FwdCodeExercise.SocketHandlerTest do
   @moduledoc """
-  Tests for the `FwdCodeExercise.SocketHandler` module,
+  Unit tests for the `FwdCodeExercise.SocketHandler` module,
   which handles websocket connections for the "wildfires" topic.
   """
 

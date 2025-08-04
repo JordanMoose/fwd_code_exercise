@@ -11,24 +11,23 @@ defmodule FwdCodeExercise.Application do
   """
   @impl Application
   @spec start(Application.start_type(), term()) ::
-    {:ok, pid()} |
-    {:error, {:already_started, pid()} | {:shutdown, term()} | term()}
+          {:ok, pid()}
+          | {:error, {:already_started, pid()} | {:shutdown, term()} | term()}
   def start(_type, _args) do
-    children = [
-      {Phoenix.PubSub, name: FwdCodeExercise.PubSub},
-      {Bandit, plug: FwdCodeExercise.Router, ip: :loopback, port: 4000},
-      {FwdCodeExercise.SocketClient, Application.get_env(:fwd_code_exercise, :websocket_url, "ws://localhost:4000/")}
-    ] ++ poller_client()
+    children =
+      if Mix.env() == :test do
+        []
+      else
+        [
+          {Phoenix.PubSub, name: FwdCodeExercise.PubSub},
+          {Bandit, plug: FwdCodeExercise.Router, ip: :loopback, port: 4000},
+          FwdCodeExercise.ArcGisPoller,
+          {FwdCodeExercise.SocketClient,
+           Application.get_env(:fwd_code_exercise, :websocket_url, "ws://localhost:4000/")}
+        ]
+      end
 
     opts = [strategy: :one_for_one, name: FwdCodeExercise.Supervisor]
     Supervisor.start_link(children, opts)
-  end
-
-  defp poller_client() do
-    if Mix.env() == :test do
-      []
-    else
-      [FwdCodeExercise.ArcGisPoller]
-    end
   end
 end

@@ -9,7 +9,7 @@ defmodule FwdCodeExercise.SocketClient do
   @default_output_filepath "wildfire_updates/wildfire_data"
 
   @doc """
-  Starts a websocket connection to the specified URL.
+  Starts a websocket connection to the specified URL and logs the connection status.
 
   ## Parameters
   - `url`: The websocket URL to connect to.
@@ -20,7 +20,15 @@ defmodule FwdCodeExercise.SocketClient do
   """
   @spec start_link(binary()) :: {:ok, pid()} | {:error, term()}
   def start_link(url) do
-    WebSockex.start_link(url, __MODULE__, %{})
+    case WebSockex.start_link(url, __MODULE__, %{}) do
+      {:ok, pid} ->
+        Logger.info("Socket client connected to #{url} with PID #{inspect(pid)}")
+        {:ok, pid}
+
+      {:error, reason} ->
+        Logger.error("Failed to connect socket client: #{inspect(reason)}")
+        {:error, reason}
+    end
   end
 
   @doc """

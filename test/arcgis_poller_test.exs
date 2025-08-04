@@ -17,6 +17,8 @@ defmodule FwdCodeExercise.ArcGisPollerTest do
 
   doctest ArcGisPoller
 
+  setup :verify_on_exit!
+
   describe "start_link/1" do
     test "happy path: successfully starts the ArcGisPoller GenServer" do
       assert {:ok, _pid} = ArcGisPoller.start_link([])

@@ -36,19 +36,24 @@ defmodule FwdCodeExercise.SocketHandler do
   end
 
   @doc """
-  Handles incoming messages on the "wildfires" topic
-  and pushes the stringified GeoJSON data to the client.
+  Handles incoming messages on the "wildfires" topic.
+
+  If the message is of type `{:wildfire_updates, geojson}`,
+  it pushes the stringified GeoJSON data to the client.
+
+  For other messages, the state is returned unchanged.
 
   ## Parameters
-  - `{:wildfire_updates, geojson}`: The GeoJSON data received from the ArcGisPoller.
+  - `message`: The GeoJSON data received from the ArcGisPoller, or another message.
   - `state`: The current state of the WebSocket handler.
 
   ## Returns
   - `{:push, {:text, json}, state}`: The updated state of the WebSocket handler with the stringified GeoJSON data.
+  - `{:ok, state}`: The unchanged state if the message is not related to wildfire updates.
   """
   @impl WebSock
-  @spec handle_info({:wildfire_updates, map()}, WebSock.state()) ::
-          {:push, {:text, binary()}, WebSock.state()}
+  @spec handle_info(term(), WebSock.state()) ::
+          {:push, {:text, binary()}, WebSock.state()} | {:ok, WebSock.state()}
   def handle_info({:wildfire_updates, json}, state) do
     wildfire_updates =
       json
@@ -56,6 +61,11 @@ defmodule FwdCodeExercise.SocketHandler do
       |> Jason.encode!(pretty: true)
 
     {:push, {:text, wildfire_updates}, state}
+  end
+
+  def handle_info(_message, state) do
+    # Ignore other messages
+    {:ok, state}
   end
 
   @doc """

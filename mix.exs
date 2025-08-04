@@ -28,6 +28,7 @@ defmodule FwdCodeExercise.MixProject do
       {:phoenix_pubsub, "~> 2.1"},
       {:req, "~> 0.5.15"},
       {:jason, "~> 1.4"},
+      {:mock, "~> 0.3.9", only: :test},
     ]
   end
 end

@@ -44,7 +44,7 @@ defmodule FwdCodeExercise.SocketClient do
           {:ok, term()} | {:reply, WebSockex.frame(), term()}
   def handle_frame({:text, msg} = frame, state) do
     case Jason.decode(msg) do
-      {:ok, %{"type" => "wildfire_updates"} = json} ->
+      {:ok, %{"is_wildfire_update" => true} = json} ->
         handle_wildfire_updates(json, state)
 
       _ ->
@@ -62,12 +62,12 @@ defmodule FwdCodeExercise.SocketClient do
   # ## Returns
   # - `{:reply, {:text, message}, state}`: The updated state of the websocket with a confirmation message.
   @spec handle_wildfire_updates(map(), term()) :: {:reply, {:text, binary()}, term()}
-  defp handle_wildfire_updates(%{"type" => "wildfire_updates"} = json, state) do
+  defp handle_wildfire_updates(%{"is_wildfire_update" => true} = json, state) do
     output_filepath =
       Application.get_env(:fwd_code_exercise, :output_filepath, @default_output_filepath) <>
         ".#{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()}.json"
 
-    with geojson <- Map.delete(json, "type"),
+    with geojson <- Map.delete(json, "is_wildfire_update"),
          {:ok, stringified_json} <- Jason.encode(geojson, pretty: true),
          :ok <- File.write(output_filepath, stringified_json) do
       Logger.info("Received wildfire updates and saved to #{output_filepath}")

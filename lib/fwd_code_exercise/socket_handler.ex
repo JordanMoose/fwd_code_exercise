@@ -49,18 +49,20 @@ defmodule FwdCodeExercise.SocketHandler do
 
   ## Returns
   - `{:push, {:text, json}, state}`: The updated state of the WebSocket handler with the stringified GeoJSON data.
-  - `{:ok, state}`: The unchanged state if the message is not related to wildfire updates.
+  - `{:ok, state}`: The unchanged state if the message is not related to wildfire updates or if encoding fails.
   """
   @impl WebSock
   @spec handle_info(term(), WebSock.state()) ::
           {:push, {:text, binary()}, WebSock.state()} | {:ok, WebSock.state()}
-  def handle_info({:wildfire_updates, json}, state) do
-    wildfire_updates =
-      json
-      |> Map.put("type", "wildfire_updates")
-      |> Jason.encode!(pretty: true)
-
-    {:push, {:text, wildfire_updates}, state}
+  def handle_info({:wildfire_updates, geojson}, state) do
+    with wildfire_updates <- Map.put(geojson, "type", "wildfire_updates"),
+         {:ok, stringified_json} <- Jason.encode(wildfire_updates, pretty: true) do
+      {:push, {:text, stringified_json}, state}
+    else
+      {:error, error} ->
+        Logger.error("Failed to encode wildfire updates: #{inspect(error)}")
+        {:ok, state}
+    end
   end
 
   def handle_info(_message, state) do

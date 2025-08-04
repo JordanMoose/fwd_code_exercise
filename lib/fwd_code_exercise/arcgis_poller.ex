@@ -14,8 +14,7 @@ defmodule FwdCodeExercise.ArcGisPoller do
     SocketHandler
   }
 
-  # TODO: Set poll interval to 15 minutes to match the ArcGIS API's update frequency
-  @default_poll_interval :timer.seconds(60)
+  @default_poll_interval :timer.minutes(15)
   @default_incidents_endpoint "https://services9.arcgis.com/RHVPKKiFTONKtxq3/ArcGIS/rest/services/USA_Wildfires_v1/FeatureServer/0/query"
 
   @doc """

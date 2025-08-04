@@ -86,8 +86,10 @@ defmodule FwdCodeExercise.SocketClient do
         {:reply, {:text, "Error processing wildfire updates"}, state}
 
       {:error, :enoent} ->
-        case File.mkdir_p(Path.dirname(output_filepath)) do
+        output_directory = Path.dirname(output_filepath)
+        case File.mkdir_p(output_directory) do
           :ok ->
+            Logger.debug("Created directory for output file: #{output_directory}")
             handle_wildfire_updates(json, state)
 
           {:error, reason} ->

@@ -24,3 +24,6 @@ fwd_code_exercise-*.tar
 
 # Ignore the ElixirLS configuration directory.
 /.elixir_ls/
+
+# Ignore the generated output files.
+/wildfire_updates/

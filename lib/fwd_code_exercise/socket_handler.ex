@@ -54,7 +54,7 @@ defmodule FwdCodeExercise.SocketHandler do
   @impl WebSock
   @spec handle_info(term(), WebSock.state()) ::
           {:push, {:text, binary()}, WebSock.state()} | {:ok, WebSock.state()}
-  def handle_info({:wildfire_updates, geojson}, state) do
+  def handle_info({:wildfire_updates, %{} = geojson}, state) do
     with wildfire_updates <- Map.put(geojson, "is_wildfire_update", true),
          {:ok, stringified_json} <- Jason.encode(wildfire_updates, pretty: true) do
       {:push, {:text, stringified_json}, state}

@@ -34,30 +34,9 @@ defmodule FwdCodeExercise.SocketHandlerTest do
 
   describe "handle_info/2" do
     test "happy path: adds 'is_wildfire_update' => true to the GeoJSON data and pushes the stringified JSON data to the client" do
-      geojson = %{
-        "crs" => %{
-          "properties" => %{
-            "name" => "EPSG:4326"
-          },
-          "type" => "name"
-        },
-        "features" => [
-          %{
-            "geometry" => %{
-              "coordinates" => [
-                100.111,
-                100.222
-              ],
-              "type" => "Point"
-            },
-            "properties" => %{
-              "IncidentName" => "Test wildfire"
-            },
-            "type" => "Feature"
-          }
-        ],
-        "type" => "FeatureCollection"
-      }
+      geojson =
+        File.read!("test/fixture/test_geojson.json")
+        |> Jason.decode!()
 
       state = %{}
 

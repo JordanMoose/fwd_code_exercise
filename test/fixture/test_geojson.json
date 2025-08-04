@@ -1,0 +1,24 @@
+{
+  "crs": {
+    "properties": {
+      "name": "EPSG:4326"
+    },
+    "type": "name"
+  },
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          100.111,
+          100.222
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "IncidentName": "Test wildfire"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}
